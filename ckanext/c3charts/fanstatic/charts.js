@@ -5,13 +5,13 @@ this.ckan.views.c3charts = this.ckan.views.c3charts || {};
 (function (self, $) {
     "use strict";
 
-    self.init = function init(elementId, resource, resourceView) {
-        initPlot(elementId, resource, resourceView);
+    self.init = function init(elementId, resource, resourceView, params) {
+        initPlot(elementId, resource, resourceView, params);
     };
 
-    function initPlot(elementId, resource, resourceView) {
+    function initPlot(elementId, resource, resourceView, params) {
 
-        var queryParams = generateQueryParams(resource, {});
+        var queryParams = generateQueryParams(resource, params);
 
         $.when(
             recline.Backend.Ckan.fetch(resource),
@@ -314,6 +314,17 @@ this.ckan.views.c3charts = this.ckan.views.c3charts || {};
             sort: [],
             size: 500
         };
+
+        if (params.filters) {
+            query.filters = $.map(params.filters, function (values, field) {
+                return {
+                    type: "term",
+                    field: field,
+                    term: values
+                };
+            });
+        }
+
         return query;
     }
 
