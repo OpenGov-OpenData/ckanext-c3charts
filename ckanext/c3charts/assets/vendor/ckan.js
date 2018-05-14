@@ -178,7 +178,8 @@ if (isNodeModule) {
       resource_id: queryObj.resource_id,
       q: queryObj.q,
       filters: {},
-      limit: queryObj.size || 10,
+      //limit: queryObj.size || 10,
+      limit: 100000,
       offset: queryObj.from || 0
     };
 
