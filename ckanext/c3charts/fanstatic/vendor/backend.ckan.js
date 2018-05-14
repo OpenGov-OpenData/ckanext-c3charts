@@ -80,7 +80,8 @@ this.recline.Backend.Ckan = this.recline.Backend.Ckan || {};
       resource_id: dataset.id,
       q: queryObj.q,
       filters: {},
-      limit: queryObj.size || 10,
+      //limit: queryObj.size || 10,
+      limit: 100000,
       offset: queryObj.from || 0
     };
 
