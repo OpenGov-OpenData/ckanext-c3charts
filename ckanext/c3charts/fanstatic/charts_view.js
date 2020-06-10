@@ -12,9 +12,11 @@ ckan.module('c3charts_builder', function ($, _) {
 
     function setupFilters(defaultFilters) {
         var routeFilters = {};
-        if (window.parent.ckan.views && window.parent.ckan.views.filters) {
-            routeFilters = window.parent.ckan.views.filters.get();
-        }
+        try {
+            if (window.parent.ckan.views && window.parent.ckan.views.filters) {
+                routeFilters = window.parent.ckan.views.filters.get();
+            }
+        } catch(e) {}
 
         return $.extend({}, defaultFilters, routeFilters);
     }
