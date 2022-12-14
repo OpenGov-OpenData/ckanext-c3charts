@@ -27,7 +27,7 @@ ckan.module('c3charts_builder', function ($, _) {
                 endpoint = self.options.endpoint || self.sandbox.client.endpoint + "/api",
                 resourceView = self.options.resourceView,
                 params = setupParams(resourceView),
-                elementId = "#" + self.el.context.id,
+                elementId = "#" + self.el['0'].id,
                 resource = {
                     id: self.options.resourceId,
                     endpoint: endpoint
