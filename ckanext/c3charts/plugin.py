@@ -78,7 +78,12 @@ class ChartsPlugin(plugins.SingletonPlugin):
                                 {'value': 'Spline Chart'},
                                 {'value': 'Table Chart'},
                                 {'value': 'Simple Chart'}],
-                'color_schemes': [{'value': '#B80000, #995522, #556677, #118888, #115588, '
+                'color_schemes': [{'value': '#4781BF, #A1BBE5, #E59539, #E8CE8B, #6F5DA8, '
+                                            '#CDABDB, #3D9990, #7CCFB4, #4C5FB5, #979ACC, '
+                                            '#CC5E69, #EDA19F, #4692B0, #8BD4D6, #E0694F, '
+                                            '#F5A482, #549970, #9AD9A4, #9C4174, #CF7C92',
+                                   'text': toolkit._('Default')},
+                                  {'value': '#B80000, #995522, #556677, #118888, #115588, '
                                             '#4C3D3D, #2B2B2B, #660000, #221100',
                                    'text': toolkit._('Saturated')},
                                   {'value': '#DDBBAA, #79E6F2, #88AA99, #00A864, #228899, '
