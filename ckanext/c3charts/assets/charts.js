@@ -10,6 +10,10 @@ this.ckan.views.c3charts = this.ckan.views.c3charts || {};
     };
 
     function initPlot(elementId, resource, resourceView, params) {
+        // Show the loading indicator before starting the data fetch
+        $('#chart-export').hide();
+        $('#chart-loading').show();
+        let loadComplete = false;
 
         var filters = resourceView.filters || [];
         var queryParams = generateQueryParams(resource, params);
@@ -18,25 +22,56 @@ this.ckan.views.c3charts = this.ckan.views.c3charts || {};
             queryParams.filters.push({type: 'term', field: field, term: values});
         });
 
-        $.when(
-            recline.Backend.Ckan.fetch(resource),
-            recline.Backend.Ckan.query(queryParams, resource)
-        ).done(function (fetch, query) {
-            var fields = fetch.fields,
-                data = query.hits;
+        recline.Backend.Ckan.fetch(resource).done(function (fetch) {
+            var fields = fetch.fields;
+            var allData = [];
+            var limit = 32000;
+            var offset = 0;
 
+            function loadPage() {
+                var pagedQuery = generateQueryParams(resource, params);
+                pagedQuery.size = limit;
+                pagedQuery.from = offset;
 
-            if (resourceView.key_fields) {
-                if (resourceView.chart_type == 'Table Chart' ||
-                    resourceView.chart_type == 'Simple Chart') {
-                    textChartBuilder(elementId, resourceView, data);
-                } else {
-                    c3.generate(chartBuilder(elementId, resourceView, data));
-                }
-            } else {
-                $(elementId).append("No keys defined");
+                recline.Backend.Ckan.query(pagedQuery, resource).done(function (query) {
+                    var hits = query.hits;
+                    allData = allData.concat(hits);
+                    if (hits.length === limit && allData.length < 1000000) {
+                        offset += limit;
+                        loadPage();  // load next page
+                    } else {
+                        renderChart(allData);  // done loading data
+                    }
+                });
             }
+
+            function renderChart(data) {
+                if (resourceView.key_fields) {
+                    if (resourceView.chart_type == 'Table Chart' ||
+                        resourceView.chart_type == 'Simple Chart') {
+                        textChartBuilder(elementId, resourceView, data);
+                    } else {
+                        c3.generate(chartBuilder(elementId, resourceView, data));
+                    }
+                } else {
+                    $(elementId).append("No keys defined");
+                }
+
+                loadComplete = true;
+                $('#chart-loading').hide();
+                $('#chart-export').show();
+            }
+
+            loadPage();  // start loading data
         });
+
+        // fallback in case of error
+        setTimeout(function () {
+            if (!loadComplete) {
+                $('#chart-loading').hide();
+                $(elementId).append('This chart took too long to load or may be missing data.');
+            }
+        }, 10000);
     }
 
     function chartBuilder(elementId, resourceView, data) {
@@ -316,8 +351,7 @@ this.ckan.views.c3charts = this.ckan.views.c3charts || {};
     function generateQueryParams(resource, params) {
         var query = {
             filters: [],
-            sort: [],
-            size: 500
+            sort: []
         };
 
         if (params.filters) {

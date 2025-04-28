@@ -150,7 +150,10 @@ def _get_fields(resource):
         'resource_id': resource['id'],
         'limit': 0
     }
-    result = plugins.toolkit.get_action('datastore_search')({}, data)
+    try:
+        result = plugins.toolkit.get_action('datastore_search')({}, data)
+    except plugins.toolkit.ObjectNotFound:
+        return []
     return result['fields']
 
 
