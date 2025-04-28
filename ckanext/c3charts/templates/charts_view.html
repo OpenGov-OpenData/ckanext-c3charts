@@ -2,6 +2,12 @@
 {% asset 'c3charts/export-to-png' %}
 {% asset 'c3charts/save-svg-png' %}
 
+<div id="chart-loading" style="text-align:center;">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
 <div
   data-module = "c3charts_builder"
   data-module-resource-id = "{{ resource.id }}"
@@ -11,7 +17,7 @@
   >
 </div>
 
-<div class="btn-group">
+<div id="chart-export" class="btn-group">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Export <span class="caret"></span>
   </button>
